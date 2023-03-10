@@ -11,10 +11,6 @@ class User extends ActiveRecord implements IdentityInterface
 {
     public $user = false;
     private $_model;
-    public $iscensored=0;
-    public $school;
-    public $change_mod;
-    public $role;
     public $login;
     public static function tableName()
     {
@@ -26,7 +22,7 @@ class User extends ActiveRecord implements IdentityInterface
             [['password'], 'required'],
             [['usernamerus', 'password','username'], 'string', 'max' => 50],
             [['ingroup'],'integer'],
-	    ['role','find_role'],
+	        ['role','find_role'],
             ['password', 'validatePassword'],
         ];
     }
@@ -40,7 +36,6 @@ class User extends ActiveRecord implements IdentityInterface
             'password' => 'Пароль',
             'username'=>'Логин',
             'ingroup'=>'Организация',
-            'school'=>'Организация',
 
             'role'=>'Роль',
       
@@ -77,8 +72,13 @@ return $row;
  
  //-------------------------------------------------
    public function find_role() {
-        $upd=Yii::$app->user->identity->getParams(Yii::$app->user->id);
-        return $upd['role'];
+    $role = (new \yii\db\Query())    
+                    ->select('role')
+                    ->from('users')
+                    ->where('id='.Yii::$app->user->id)
+                    ->One();
+    
+        return $role['role'];
      
 
 }
@@ -137,20 +137,7 @@ protected function loadUser($id=null)
     return $this->_model;
 }
 //-------------------------------------------------------------
-    //---------------------------------------------
-    public function isAdmin(){
-        $id_us=Yii::$app->user->id;
-        $user = $this->loadUser($id_us);
-        $aparam=$this->getParams();	
-    
-        $role=((isset($aparam['role']))?$aparam['role']:0);   
-         if ($user) {	
-            return $role;
-        } else {
-            return 0;
-        }
-      }
-      //--------------------------------------------
+
 //------------------------------------------
 public function search($params,$upd)
 {

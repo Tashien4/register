@@ -258,8 +258,9 @@ font-size:20px;
 		<?php echo $model->getAttributeLabel('tab');?>
 		<?php 
 			$model->tabs=$model->find_tab($model->tab); 
-                        
-			echo '<br>'.$form->field($model, 'tabs')->widget(
+		
+              if($role==1)          
+					echo '<br>'.$form->field($model, 'tabs')->widget(
                         AutoComplete::className(), [            
                             'clientOptions' => [
                                 'source' =>$model->tab_auto(),
@@ -270,7 +271,9 @@ font-size:20px;
 									$('#fio-tab').val(ui.item.id);
 								}")],
                                 'options' =>['style'=>'width:500px']
-                                 ])->label('');?>  <?= Html::activeHiddenInput($model, 'tab')?>   
+                                 ])->label('');
+				else echo $model->tabs;				 
+								 ?>  <?= Html::activeHiddenInput($model, 'tab')?>   
                      <?php echo '</div><div style="padding-left: 20px;">'.$form->field($rfiomodel,'tel')->textInput(['style'=>'width:300px;']);                    
 			    ?></div></div>
     		<?= Html::submitButton('Сохранить', ['class' => 'btn btn-success','name'=>'save_otvet']) ?>	

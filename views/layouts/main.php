@@ -39,10 +39,15 @@ AppAsset::register($this);
     ]);
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav'],
-                'items' => [
+                'items' => [!Yii::$app->user->isGuest ? (['label' => 'Личный кабинет', 'url' => ['/site/lk']]):(['label' => '', 'url' => ['/site/login']]),
             	    !Yii::$app->user->isGuest ? (['label' => 'Реестр', 'url' => ['/fio/list']]):(['label' => '', 'url' => ['/site/login']]),
 			!Yii::$app->user->isGuest ? (['label' => 'Список членов семьи', 'url' => ['/family/list']]):(['label' => '', 'url' => ['/site/login']]),
     		!Yii::$app->user->isGuest ? (['label' => 'Обращения', 'url' => ['/reestr/list']]):(['label' => '', 'url' => ['/site/login']]),
+            Yii::$app->user->isGuest ?
+                ['label' => '', 'url' => ['/site/index']]:
+                 Yii::$app->user->identity->role>0 ? 
+                ['label' => 'Администрирование', 'url' => ['/site/admin']]:
+                ['label' => '', 'url' => ['/site/index']],
              Yii::$app->user->isGuest ? (
                 ['label' => 'Вход', 'url' => ['/site/login']]
             ) : ( ['label' => 'Выход (' . Yii::$app->user->identity->usernamerus . ')', 'url' => ['/site/logout']]

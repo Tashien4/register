@@ -17,7 +17,6 @@ class LoginForm extends ActiveRecord
 
     public $user = false;
     private $_model;
-    public $role;
     public $login;
 
 
@@ -30,12 +29,7 @@ class LoginForm extends ActiveRecord
         return [
             [['username','usernamerus', 'password','login','role'], 'string', 'max' => 50],
             [['ingroup','role'],'integer'],
-            // username and password are both required
-           // [['username', 'password'], 'required'],
-            // rememberMe must be a boolean value
-          //  ['rememberMe', 'boolean'],
-            // password is validated by validatePassword()
-           // ['password', 'validatePassword'],
+
         ];
     } 
     public static function tableName()
@@ -47,8 +41,6 @@ class LoginForm extends ActiveRecord
         return [
             
             'usernamerus' => 'ФИО пользователя',
-            'school' => 'Организация',
-
             'password' => 'Пароль',
             'login'=>'Логин',
             'ingroup'=>'Организация',
@@ -57,16 +49,10 @@ class LoginForm extends ActiveRecord
         ];
     }
 //------------------------------------------
-public function getUparams()
-{
-    return $this->hasOne(_uparams::className(), ['id_user' => 'id']);
-}
-//------------------------------------------
-
     //------------------------------------------
-    public function search($params,$upd)
+    public function search($params)
     {
-        $query = LoginForm::find()->joinWith(['uparams']);
+        $query = LoginForm::find();
     
         $dataProvider = new ActiveDataProvider([
             'query' => $query,  'pagination' => [
@@ -74,20 +60,15 @@ public function getUparams()
     		],
         
         ]);
-      
-        $per=$_SESSION['cur_period'];  
-
-        $dataProvider->query->where('_uparams.id_is=1202');
 
         if (!($this->load($params) && $this->validate())) {
             return $dataProvider;
         }
        
         // adjust the query by adding the filters
-        $query->andFilterWhere(['like','_uparams.name','"role";s:1:"'.($this->role>-1?$this->role:'%').'"'])
+        $query->andFilterWhere(['like','role',$this->role])
         ->andFilterWhere(['like', 'usernamerus', $this->usernamerus])
-        ->andFilterWhere(['like', 'username', $this->login])
-              ->andFilterWhere(['like', 'ingroup', $this->ingroup]);
+        ->andFilterWhere(['like', 'username', $this->login]);
               
          //     ->andFilterWhere(['like', 'type_name.name', $this->type_name]);
     

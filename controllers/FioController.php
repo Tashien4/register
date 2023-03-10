@@ -282,15 +282,14 @@ $zip->close();
                  return $this->redirect(['/fio/update', 'id' => $model->id,'rel'=>2]);
 		
         };
-    
-
+        $role=Yii::$app->user->identity->find_role();
         return $this->render('update', [
         'model' => $model,
 		'pmodel' => $pmodel,
 		'bmodel' => $bmodel,
 		'finmodel' => $finmodel,
-		'afmodel' => $afmodel, 'rfiomodel'=>$rfiomodel
-
+		'afmodel' => $afmodel, 'rfiomodel'=>$rfiomodel,
+            'role'=>$role
         ]);
     }
 //--------------------------------------------------
